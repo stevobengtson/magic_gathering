@@ -22,7 +22,7 @@ Route::redirect('/', '/posts');
  */
 Route::namespace('Posts')->group(function() {
   Route::get('/posts', function () {
-      return view('posts', [
+      return view('posts/posts', [
           'posts' => Post::orderBy('created_at', 'asc')->get()
       ]);
   })->name('posts');
