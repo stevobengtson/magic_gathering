@@ -1,24 +1,52 @@
-version: '2'
+version: '3.7'
 
 services:
+  # Apps and Apis
+  #
+  # PHP API for posts
+  posts-api:
+    container_name: posts-api
+    build:
+      context: ./posts-api
+      dockerfile: Dockerfile
+    ports:
+      - 8181:8181
+    environment:
+      - APP_ENV=testing
+      - APP_URL=http://localhost:8181
+      - DB_HOST=mysql
+      - DB_DATABASE=magic_gathering
+      - DB_USERNAME=magic_gathering_user
+      - DB_PASSWORD=m@g1c_g@th3r1ng_us3r
+      - REDIST_HOST=redis
+    volumes:
+      - ./posts-api/:/app
+      - /app/vendor
+
+  # User Web front end
+  user-web:
+    container_name: user-web
+    build:
+      context: ./user-web
+      dockerfile: Dockerfile
+    volumes:
+      - ./user-web/:/app
+      - /app/node_modules
+    ports:
+      - 4200:4200
+      - 9229:9229
+
+  # Common Services
+  #
   mysql:
     image: mysql:5.7
     ports:
       - 3306:3306
     environment:
-      - MYSQL_DATABASE=homestead
-      - MYSQL_USER=homestead
-      - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_PASSWORD=secret
-
-  app:
-    image: kyleparisi/larasible
-    ports:
-      - 80:80
-    environment:
-      - APP_ENV=testing
-    volumes:
-      - ./:/var/www/default
+      - MYSQL_DATABASE=magic_gathering
+      - MYSQL_USER=magic_gathering_user
+      - MYSQL_PASSWORD=m@g1c_g@th3r1ng_us3r
+      - MYSQL_ROOT_PASSWORD=m@g1c_g@th3r1ng_r00t
 
   redis:
     image: redis
